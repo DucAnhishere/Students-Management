@@ -1,0 +1,563 @@
+/*                                                  NOTE
+
+- department tạo Course và ghi vào file course_grade.txt
+- lecturer nhập điểm
+- Course và điểm sẽ được tạo giống username và password trong course_grade.txt VD: Calculus 10
+- File student_infor.txt để ghi fullname và ID của students -> Phục vụ 1 mục đích duy nhất là print_infor()
+
+*/
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <bits/stdc++.h>
+#include <fstream>
+#include <map>
+#include <cctype>
+using namespace std;
+
+//-----------------------------  SIGN IN - LOG IN  -----------------------------
+map<string, string> studentAccounts;
+map<string, string> lecturerAccounts;
+map<string, string> parentsAccounts;
+map<string, string> departmentAccounts;
+
+const string departmentfilename = "department_accounts.txt";
+const string studentfilename = "student_accounts.txt";
+const string parentsfilename = "parents_accounts.txt";
+const string lecturerfilename = "lecturer_accounts.txt";
+const string course_gradefilename = "course_grade.txt";
+const string student_inforfilename = "student_infor.txt";
+
+void loadAccountsFromFile(const string &filename, map<string, string> &accounts)
+{
+    ifstream file(filename);
+
+    // Kiểm tra xem tệp có tồn tại không, nếu không thì tạo mới
+    if (!file.is_open())
+    {
+        ofstream createFile(filename);
+        createFile.close();
+        file.open(filename);
+    }
+
+    if (file.is_open())
+    {
+        string username, password;
+        while (file >> username >> password)
+        {
+            accounts[username] = password;
+        }
+        file.close();
+    }
+    else
+    {
+        cerr << "Error opening the file: " << filename << "\n";
+    }
+}
+
+void registerAccount(const string &filename, map<string, string> &accounts)
+{
+    string username, password;
+
+    cout << "Enter new username: ";
+    cin >> username;
+    // Kiểm tra xem tệp có tồn tại không, nếu không thì tạo mới
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        ofstream createFile(filename);
+        createFile.close();
+        file.open(filename);
+    }
+
+    // Kiểm tra xem tài khoản đã tồn tại chưa
+    if (accounts.find(username) == accounts.end())
+    {
+        cout << "Enter new password: ";
+        cin >> password;
+
+        accounts[username] = password;
+
+        ofstream file(filename, ios::app);
+        if (file.is_open())
+        {
+            file << username << " " << password << "\n";
+            file.close();
+            cout << "Account registered successfully.\n";
+        }
+        else
+        {
+            cerr << "Error opening the file: " << filename << "\n";
+        }
+    }
+    else
+    {
+        cerr << "Username already exists. Please choose a different username.\n";
+    }
+}
+
+bool login(const string &username, const string &password, const map<string, string> &accounts)
+{
+    auto it = accounts.find(username);
+    if (it != accounts.end() && it->second == password)
+    {
+        cout << "Login successful.\n";
+        return true;
+    }
+    else
+    {
+        cerr << "Login failed. Invalid username or password.\n";
+        return false;
+    }
+}
+
+void deleteAccounts(const string &filename, const string &usernameToDelete, const string &passwordToDelete, map<string, string> &accounts)
+{
+    ifstream inFile(filename);
+    if (!inFile.is_open())
+    {
+        cerr << "Error opening the file: " << filename << endl;
+        return;
+    }
+    ofstream tempFile("temp.txt"); // Mở file tạm để ghi
+    if (!tempFile.is_open())
+    {
+        cerr << "Error opening the temporary file." << endl;
+        inFile.close();
+        return;
+    }
+    string line; // Duyệt qua từng dòng trong file gốc
+    bool usernameFound = false;
+    while (getline(inFile, line))
+    {
+        string username, password;
+        istringstream iss(line);
+
+        if (iss >> username >> password)
+        {
+            if (username != usernameToDelete || password != passwordToDelete)
+            {
+                tempFile << line << endl;
+            }
+            else
+            {
+                accounts.erase(username);
+                usernameFound = true;
+                cout << "Delete successfully!" << endl;
+            }
+        }
+    }
+    inFile.close();
+    tempFile.close();
+    if (usernameFound)
+    {
+        remove(filename.c_str());
+        rename("temp.txt", filename.c_str());
+    }
+    else
+    {
+        cerr << "Invalid username or password!" << endl;
+        remove("temp.txt");
+    }
+}
+
+//-----------------------------  Student  -----------------------------
+class Student
+{
+private:
+    string full_name;
+    string student_id;
+public:
+    // Constructor
+    Student()
+    {
+        full_name = "";
+        student_id = "";
+    }
+    string getFullname()
+    {
+        return full_name;
+    }
+    string getStudentID()
+    {
+        return student_id;
+    }
+
+    void setStudentID(const string &id)
+    {
+        student_id = id;
+    }
+    void setFullname(const string &name)
+    {
+        full_name = name;
+    }
+
+    virtual void print_info()
+    {
+        cout << "Full Name: " << full_name << endl;
+        cout << "StudentID: " << student_id << endl;
+    }
+};
+void inputStudent(Student &student)
+{
+    string temp;
+    cout << "Enter full name: ";
+    getline(cin, temp);
+    student.setFullname(temp);
+
+    cout << "Enter StudentID: ";
+    getline(cin, temp);
+    student.setStudentID(temp);
+}
+void displayStudent(const vector<Student *> &student)
+{
+    cout << "Student List:\n";
+    for (const auto &student : student)
+    {
+        student->print_info();
+    }
+}
+
+//-----------------------------  LECTURER  -----------------------------
+class Lecturer
+{
+private:
+    string full_name;
+    string lecturer_id;
+
+public:
+    // Constructor
+    Lecturer()
+    {
+        full_name = "";
+        lecturer_id = "";
+    }
+
+    string getFullname()
+    {
+        return full_name;
+    }
+    string getLecturerID()
+    {
+        return lecturer_id;
+    }
+
+    void setLecturerID(const string &id)
+    {
+        lecturer_id = id;
+    }
+    void setFullname(const string &name)
+    {
+        full_name = name;
+    }
+};
+
+void inputLecturer(Lecturer &lecturer)
+{
+    string temp;
+    cout << "Enter full name: ";
+    getline(cin, temp);
+    lecturer.setFullname(temp);
+
+    cout << "Enter LecturerID: ";
+    getline(cin, temp);
+    lecturer.setLecturerID(temp);
+}
+
+//-----------------------------  PARENTS   -----------------------------
+class Parents
+{
+private:
+    string full_name;
+
+public:
+    // Constructor
+    Parents()
+    {
+        full_name = "";
+    }
+
+    string getFullname()
+    {
+        return full_name;
+    }
+
+    void setFullname(const string &name)
+    {
+        full_name = name;
+    }
+
+    virtual void print_info()
+    {
+        cout << "Full Name: " << full_name << endl;
+    }
+};
+
+void inputParents(Parents &parents)
+{
+    string temp;
+    cout << "Enter full name: ";
+    getline(cin, temp);
+    parents.setFullname(temp);
+}
+
+//-----------------------------  DEPARTMENT  -----------------------------
+class Department
+{
+private:
+    string full_name;
+    string department_id;
+
+public:
+    // Constructor
+    Department()
+    {
+        full_name = "";
+        department_id = "";
+    }
+    string getFullname()
+    {
+        return full_name;
+    }
+    string getDepartmentId()
+    {
+        return full_name;
+    }
+    void setFullname(const string &name)
+    {
+        full_name = name;
+    }
+    void setDepartmentID(const string &id)
+    {
+        department_id = id;
+    }
+};
+
+//-----------------------------  MENU  -----------------------------
+// Gọi sau khi đăng nhập
+void displayStudentMenu()
+{
+    cout << "-----------------------------" << endl;
+    cout << "Select an option:" << endl;
+    cout << "1. Display your personal information" << endl;
+    cout << "0. Exit" << endl;
+}
+void displayLecturerMenu()
+{
+    cout << "-----------------------------" << endl;
+    cout << "Select an option:" << endl;
+    cout << "1. Display student's information in class" << endl;
+    cout << "2. Change student's information in class" << endl;
+    cout << "0. Exit" << endl;
+}
+void displayParentsMenu()
+{
+    cout << "-----------------------------" << endl;
+    cout << "Select an option:" << endl;
+    cout << "1. Display student's information in class" << endl;
+    cout << "0. Exit" << endl;
+}
+void displayDepartmentMenu()
+{
+    cout << "-----------------------------" << endl;
+    cout << "Select an option:" << endl;
+    cout << "1. Create new account: " << endl;
+    cout << "2. Delete account: " << endl;
+    cout << "0. Exit" << endl;
+}
+
+//-----------------------------  HÀM MAIN  -----------------------------
+int main()
+{
+    string username, password;
+    string usernameToDelete, passwordToDelete;
+    char userTypeToDelete, userTypeToRegister;
+    vector<Lecturer *> lecturerList;
+    vector<Student *> studentList;
+    vector<Parents *> parentsList;
+    vector<Department *> departmentList;
+    while (true)
+    {
+        char userType;
+        cout << "Enter the type of user (S for Student, L for Lecturer, P for Parents, D for Department): ";
+        cin >> userType;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (tolower(userType) == 's') //----------------STUDENTS----------------
+        {
+            cout << "Log in: " << endl;
+            loadAccountsFromFile(studentfilename, studentAccounts);
+            cout << "Enter your username(ID): ";
+            cin >> username;
+            cout << "Enter your password: ";
+            cin >> password;
+            bool loginSuccess = login(username, password, studentAccounts);
+            while (true)
+            {
+                if (loginSuccess)
+                {
+                    displayStudentMenu();
+                    int choice;
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    switch (choice)
+                    {
+                    case 2:     //Update fullname only
+                        cout << "Update personal information: " << endl;
+                        {
+                            Student *student = new Student();
+                            inputStudent(*student);
+                            studentList.push_back(student);
+                        }
+                        break;
+                    case 1:     //Display student's information(fullname, ID, course, grade)
+                        cout << "Display your information: " << endl;
+                        displayStudent(studentList);
+                        break;
+                    case 0:     // Exit the program
+                        return 0;
+                    default:
+                        cout << "Invalid choice. Please enter a valid option." << endl;
+                    }
+                }
+            }
+        }
+        else if (userType == 'L' || userType == 'l') //----------------LECTURER----------------
+        {
+            cout << "Log in: " << endl;
+            loadAccountsFromFile(lecturerfilename, lecturerAccounts);
+            cout << "Enter your username(ID): ";
+            cin >> username;
+            cout << "Enter your password: ";
+            cin >> password;
+            bool loginSuccess = login(username, password, lecturerAccounts);
+            while (true)
+            {
+                if (loginSuccess)
+                {
+                    displayLecturerMenu();
+                    int choice;
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    switch (choice)
+                    {
+                    case 1:     //Display student's information(fullname, ID, course, grade)
+                        cout << "Display student in your class: " << endl;
+                        displayStudent(studentList);
+                        break;
+                    case 2:     //Upadate student's grade
+                        break;
+                    case 0:     // Exit the program
+                        return 0;
+
+                    default:
+                        cout << "Invalid choice. Please enter a valid option." << endl;
+                    }
+                }
+            }
+        }
+        else if (userType == 'P' || userType == 'p') //----------------PARENTS----------------
+        {
+            cout << "Log in: " << endl;
+            loadAccountsFromFile(parentsfilename, parentsAccounts);
+            cout << "Enter your username(ID): ";
+            cin >> username;
+            cout << "Enter your password: ";
+            cin >> password;
+            bool loginSuccess = login(username, password, parentsAccounts);
+            while (true)
+            {
+                if (loginSuccess)
+                {
+                    displayParentsMenu();
+                    int choice;
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    switch (choice)
+                    {
+                    case 0:     // Exit the program
+                        return 0;
+                    default:
+                        cout << "Invalid choice. Please enter a valid option." << endl;
+                    }
+                }
+            }
+        }
+        else if (userType == 'D' || userType == 'd') //----------------DEPARTMENT----------------
+        {
+            cout << "Log in: " << endl;
+            loadAccountsFromFile(departmentfilename, departmentAccounts);
+            cout << "Username(ID): ";
+            cin >> username;
+            cout << "Password: ";
+            cin >> password;
+            bool loginSuccess = login(username, password, departmentAccounts);
+            while (true)
+            {
+                if (loginSuccess)
+                {
+                    displayDepartmentMenu();
+                    int choice;
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    switch (choice)
+                    {
+                    case 1:     //Create new account
+                        cout << "Enter the type of user to register(S for Student, L for Lecturer, P for Parents): " << endl;
+                        cin >> userTypeToRegister;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        if (tolower(userTypeToDelete) == 's')
+                        {
+                            registerAccount(studentfilename, studentAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'l')
+                        {
+                            registerAccount(lecturerfilename, lecturerAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'p')
+                        {
+                            registerAccount(parentsfilename, parentsAccounts);
+                        }
+                        break;
+                    case 2:     //Delete account
+                        cout << "Enter the type of user to delete(S for Student, L for Lecturer, P for Parents): " << endl;
+                        cin >> userTypeToDelete;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Enter username to delete: ";
+                        cin >> usernameToDelete;
+                        cout << "Enter password: ";
+                        cin >> passwordToDelete;
+                        if (tolower(userTypeToDelete) == 's')
+                        {
+                            deleteAccounts(studentfilename, usernameToDelete, passwordToDelete, studentAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'l')
+                        {
+                            deleteAccounts(lecturerfilename, usernameToDelete, passwordToDelete, lecturerAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'p')
+                        {
+                            deleteAccounts(parentsfilename, usernameToDelete, passwordToDelete, parentsAccounts);
+                        }
+                        break;
+                    case 0:     // Exit the program
+                        return 0;
+                    default:
+                        cout << "Invalid choice. Please enter a valid option." << endl;
+                    }
+                }
+            }
+        }
+        else
+        {
+            cout << "Invalid user type, please enter again!" << endl;
+            continue;
+        }
+        break;
+    }
+}
