@@ -115,6 +115,7 @@ bool login(const string &username, const string &password, const map<string, str
     }
     else
     {
+        cout << "-----------------------------" << endl;
         cerr << "Login failed. Invalid username or password.\n";
         return false;
     }
@@ -152,6 +153,7 @@ void deleteAccounts(const string &filename, const string &usernameToDelete, cons
             {
                 accounts.erase(username);
                 usernameFound = true;
+                cout << "-----------------------------" << endl;
                 cout << "Delete successfully!" << endl;
             }
         }
@@ -190,7 +192,6 @@ void inputNumber(T &i)
     }
 }
 
-
 void input(Student &s)
 {
     cout << "Name: ";
@@ -217,10 +218,9 @@ void inputCourse(Student &s)
 
 void show(const Student &s)
 {
-    cout << "-----------------------------" << endl;
-    cout << "Full name: "<< s.name << endl;
-    cout << "Student id: "<<s.id << endl;
-    cout << "Registered course: "<< s.course << endl;
+    cout << "Full name: " << s.name << endl;
+    cout << "Student id: " << s.id << endl;
+    cout << "Registered course: " << s.course << endl;
     cout << "Final grade: " << s.grade << endl;
 }
 void showList(const vector<Student> &studentlist)
@@ -234,7 +234,8 @@ void showList(const vector<Student> &studentlist)
 
     for (int i = 0; i < studentlist.size(); i++)
     {
-        cout << "Number: " <<i + 1 << endl;
+        cout << "-----------------------------" << endl;
+        cout << "Number: " << i + 1 << endl;
         show(studentlist[i]);
     }
 }
@@ -288,7 +289,7 @@ void remove(vector<Student> &studentlist)
 }
 void update(vector<Student> &studentlist)
 {
-    cout << "Choose index: "; 
+    cout << "Choose index: ";
     int choice;
     inputNumber(choice);
     if (choice < 1 || choice > studentlist.size())
@@ -411,6 +412,7 @@ vector<Student> searchbyCourse(const vector<Student> &studentlist)
         cout << "Can't find any student in the course." << endl;
         return studentlist;
     }
+    cout << "       ***";
     cout << "Students in class " << keyword << ": " << endl;
     showList(result);
     return result;
@@ -439,10 +441,6 @@ void search(const vector<Student> &studentlist)
         case 3:
             result = searchbyCourse(result);
             break;
-        case 6:
-            result = studentlist;
-            cout << "Filter refreshed." << endl;
-            break;
         case 0:
             return;
             break;
@@ -457,6 +455,7 @@ void searchChild(const vector<Student> &studentlist)
     vector<Student> result = studentlist;
     while (1)
     {
+        cout << "-----------------------------" << endl;
         cout << "Enter your choice:" << endl;
         cout << "1. View with your child's name" << endl
              << "2. View with your child's id" << endl
@@ -562,12 +561,13 @@ void displayParentsMenu()
     cout << "0. Sign out" << endl;
 }
 
-    //-----------------------------  HÀM MAIN  -----------------------------
-
+//-----------------------------  HÀM MAIN  -----------------------------
 int main()
 {
     vector<Student> studentlist;
     string username, password;
+    int maxAttemps = 3;
+    int attemps = 0;
     string usernameToDelete, passwordToDelete;
     char userTypeToDelete, userTypeToRegister;
 
@@ -578,21 +578,29 @@ int main()
         cout << "Enter the type of user (S for Student, L for Lecturer, P for Parents, D for Department): ";
         cin >> userType;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
+        bool loginSuccess = false;
         if (tolower(userType) == 's') //----------------STUDENTS----------------
         {
-            cout << "-----------------------------" << endl;
-            cout << "Log in: " << endl;
-            loadAccountsFromFile(studentfilename, studentAccounts);
-            cout << "Enter your username(ID): ";
-            cin >> username;
-            cout << "Enter your password: ";
-            cin >> password;
-            bool loginSuccess = login(username, password, studentAccounts);
+            while (attemps < maxAttemps)
+            {
+                cout << "-----------------------------" << endl;
+                cout << "Log in: " << endl;
+                loadAccountsFromFile(studentfilename, studentAccounts);
+                cout << "Enter your username(ID): ";
+                cin >> username;
+                cout << "Enter your password: ";
+                cin >> password;
+                loginSuccess = login(username, password, studentAccounts);
+                attemps++;
+                if (loginSuccess)
+                {
+                    break;
+                }
+            }
             while (true)
             {
-                if (loginSuccess) 
-                {   
+                if (loginSuccess)
+                {
                     displayStudentMenu();
                     int choice;
                     cout << "Enter your choice: ";
@@ -601,7 +609,7 @@ int main()
                     switch (choice)
                     {
                     case 1:
-                        cout << "    ***"<<endl;
+                        cout << "    ***" << endl;
                         cout << "Student List:" << endl;
                         showList(studentlist);
                         break;
@@ -625,14 +633,22 @@ int main()
         }
         else if (userType == 'L' || userType == 'l') //----------------LECTURER----------------
         {
-            cout << "-----------------------------" << endl;
-            cout << "Log in: " << endl;
-            loadAccountsFromFile(lecturerfilename, lecturerAccounts);
-            cout << "Enter your username(ID): ";
-            cin >> username;
-            cout << "Enter your password: ";
-            cin >> password;
-            bool loginSuccess = login(username, password, lecturerAccounts);
+            while (attemps < maxAttemps)
+            {
+                cout << "-----------------------------" << endl;
+                cout << "Log in: " << endl;
+                loadAccountsFromFile(lecturerfilename, lecturerAccounts);
+                cout << "Enter your username(ID): ";
+                cin >> username;
+                cout << "Enter your password: ";
+                cin >> password;
+                loginSuccess = login(username, password, lecturerAccounts);
+                attemps++;
+                if (loginSuccess)
+                {
+                    break;
+                }
+            }
             while (true)
             {
                 if (loginSuccess)
@@ -662,17 +678,25 @@ int main()
                 }
             }
         }
-        
+
         else if (userType == 'P' || userType == 'p') //----------------Parents----------------
         {
-            cout << "-----------------------------" << endl;
-            cout << "Log in: " << endl;
-            loadAccountsFromFile(parentsfilename, parentsAccounts);
-            cout << "Enter your username(ID): ";
-            cin >> username;
-            cout << "Enter your password: ";
-            cin >> password;
-            bool loginSuccess = login(username, password, parentsAccounts);
+            while (attemps < maxAttemps)
+            {
+                cout << "-----------------------------" << endl;
+                cout << "Log in: " << endl;
+                loadAccountsFromFile(parentsfilename, parentsAccounts);
+                cout << "Enter your username(ID): ";
+                cin >> username;
+                cout << "Enter your password: ";
+                cin >> password;
+                loginSuccess = login(username, password, parentsAccounts);
+                attemps++;
+                if (loginSuccess)
+                {
+                    break;
+                }
+            }
             while (true)
             {
                 if (loginSuccess)
@@ -695,22 +719,30 @@ int main()
                 }
             }
         }
-        
+
         else if (userType == 'D' || userType == 'd') //----------------DEPARTMENT----------------
         {
-            cout << "-----------------------------" << endl;
-            cout << "Log in: " << endl;
-            loadAccountsFromFile(departmentfilename, departmentAccounts);
-            cout << "Username(ID): ";
-            cin >> username;
-            cout << "Password: ";
-            cin >> password;
-            bool loginSuccess = login(username, password, departmentAccounts);
+            while (attemps < maxAttemps)
+            {
+                cout << "-----------------------------" << endl;
+                cout << "Log in: " << endl;
+                loadAccountsFromFile(departmentfilename, departmentAccounts);
+                cout << "Enter your username(ID): ";
+                cin >> username;
+                cout << "Enter your password: ";
+                cin >> password;
+                loginSuccess = login(username, password, departmentAccounts);
+                attemps++;
+                if (loginSuccess)
+                {
+                    break;
+                }
+            }
             while (true)
             {
                 if (loginSuccess)
                 {
-                    
+
                     displayDepartmentMenu();
                     int choice;
                     cout << "Enter your choice: ";
@@ -718,10 +750,44 @@ int main()
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     switch (choice)
                     {
-                    case 1: // Search byID 
-                        search(studentlist);
+                    case 1: // Create new account
+                        cout << "Enter the type of user to register(S for Student, L for Lecturer, P for Parents): " << endl;
+                        cin >> userTypeToRegister;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        if (tolower(userTypeToRegister) == 's')
+                        {
+                            registerAccount(studentfilename, studentAccounts);
+                        }
+                        else if (tolower(userTypeToRegister) == 'l')
+                        {
+                            registerAccount(lecturerfilename, lecturerAccounts);
+                        }
+                        else if (tolower(userTypeToRegister) == 'p')
+                        {
+                            registerAccount(parentsfilename, parentsAccounts);
+                        }
                         break;
-                
+                    case 2: // Delete account
+                        cout << "Enter the type of user to delete(S for Student, L for Lecturer, P for Parents): " << endl;
+                        cin >> userTypeToDelete;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Enter username to delete: ";
+                        cin >> usernameToDelete;
+                        cout << "Enter password: ";
+                        cin >> passwordToDelete;
+                        if (tolower(userTypeToDelete) == 's')
+                        {
+                            deleteAccounts(studentfilename, usernameToDelete, passwordToDelete, studentAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'l')
+                        {
+                            deleteAccounts(lecturerfilename, usernameToDelete, passwordToDelete, lecturerAccounts);
+                        }
+                        else if (tolower(userTypeToDelete) == 'p')
+                        {
+                            deleteAccounts(parentsfilename, usernameToDelete, passwordToDelete, parentsAccounts);
+                        }
+                        break;
                     case 0: // Exit the program
                         return 0;
                     default:
