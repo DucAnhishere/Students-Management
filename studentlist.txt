@@ -1,0 +1,16 @@
+duc anh
+20213689
+TWP 10
+KTLT 9
+VXL X
+
+ngo quang duc
+20213697
+VXL 8
+AI 8
+
+lung thi linh
+20210000
+KTLT 9
+AI 7
+
