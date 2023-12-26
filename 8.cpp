@@ -44,6 +44,24 @@ const string studentfilename = "student_accounts.txt";
 const string parentsfilename = "parents_accounts.txt";
 const string lecturerfilename = "lecturer_accounts.txt";
 
+void Dodge(const string &filename)
+{
+    ifstream file(filename);
+    if (file.is_open())
+    {
+        string line;
+        while (getline(file, line))
+        {
+            cout << line << endl;
+        }
+        file.close();
+    }
+    else
+    {
+        cout << "Unable to open file: " << filename << endl;
+    }
+}
+
 void clear()
 {
     cout << "\033[2J\033[1;1H";
@@ -686,7 +704,10 @@ int main()
     while (true)
     {
         char userType;
-        cout << "Enter the type of user (S for Student, L for Lecturer, P for Parents, D for Department): ";
+        Dodge("Dodge.txt");
+        cout << endl
+             << endl
+             << "Enter the type of user (S for Student, L for Lecturer, P for Parents, D for Department): ";
         cin >> userType;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         clear();
