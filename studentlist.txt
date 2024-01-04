@@ -1,8 +1,10 @@
-duc anh
+nguyen duc anh
 20213689
 TWP 10
 KTLT 9
-VXL X
+VXL 10
+KTLT X
+DTTT X
 
 ngo quang duc
 20213697
@@ -13,4 +15,13 @@ lung thi linh
 20210000
 KTLT 9
 AI 7
+
+ronaldo
+20216969
+
+messi
+20211234
+
+chiesa
+20217777
 
