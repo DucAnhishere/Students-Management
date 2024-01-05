@@ -1,10 +1,9 @@
 nguyen duc anh
 20213689
 TWP 10
-KTLT 9
+KTLT 10
 VXL 10
-KTLT X
-DTTT X
+DTTT 8
 
 ngo quang duc
 20213697
