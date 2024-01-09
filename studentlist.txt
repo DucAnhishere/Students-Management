@@ -1,9 +1,10 @@
-nguyen duc anh
+Nguyen Duc Anh
 20213689
 TWP 10
 KTLT 10
 VXL 10
-DTTT 8
+DTTT 10
+AI 8.5
 
 ngo quang duc
 20213697
@@ -12,11 +13,12 @@ AI 8
 
 lung thi linh
 20210000
-KTLT 9
+KTLT 6
 AI 7
 
-ronaldo
+CR7
 20216969
+AI 5
 
 messi
 20211234
