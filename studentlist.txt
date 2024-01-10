@@ -1,28 +1,32 @@
-Nguyen Duc Anh
+Duc Anh
 20213689
-TWP 10
-KTLT 10
+25/01/2002
+0983145399
+TWP 8
+KTLT 8
 VXL 10
 DTTT 10
 AI 8.5
+NLSCT 0
+Nihongo 0
 
-ngo quang duc
+Ngo Quang Duc
 20213697
+01/01/2003
+0983145391
 VXL 8
-AI 8
+AI 9
+TWP 8.5
+KTLT 8.5
 
-lung thi linh
+Lung Thi Linh
 20210000
+02/02/2003
+0983145392
 KTLT 6
-AI 7
+AI 6
+DTTT 3
 
-CR7
-20216969
-AI 5
-
-messi
+Nguyen Van Duc
 20211234
-
-chiesa
-20217777
 
