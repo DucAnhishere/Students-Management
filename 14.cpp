@@ -307,6 +307,12 @@ Lecturer registerAccountForLecturer(const string &filename, const string &listfi
         cout << "Enter new user's full name: ";
         cin.ignore();
         getline(cin, user_name);
+        cout << "Enter lecturer's date of birth: ";
+        string dob;
+        getline(cin, dob);
+        cout << "Enter lecturer's phone number: ";
+        string sdt;
+        getline(cin, sdt);
         cout << "Enter lecturer's school: ";
         string school;
         getline(cin, school);
@@ -328,8 +334,11 @@ Lecturer registerAccountForLecturer(const string &filename, const string &listfi
         if (listfile.is_open())
         {
             listfile << user_name << "\n"
-                     << username << "\n\n"
-                     << school << "\n\n";
+                     << username << "\n"
+                     << school << "\n"
+                     << dob << "\n"
+                     << sdt << "\n";
+
             listfile.close();
         }
         else
