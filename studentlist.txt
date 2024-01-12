@@ -1,17 +1,19 @@
 Duc Anh
 20213689
-25/01/2002
-0983145399
-TWP 8
+School of Electrical and Electronic Engineering
+IoT-02
+25/01/2003
+0983145390
+TWP 9
 KTLT 8
 VXL 10
 DTTT 10
 AI 8.5
-NLSCT 0
-Nihongo 0
 
 Ngo Quang Duc
 20213697
+School of Electrical and Electronic Engineering
+IoT-01
 01/01/2003
 0983145391
 VXL 8
@@ -21,12 +23,25 @@ KTLT 8.5
 
 Lung Thi Linh
 20210000
+The School of Information and Communication Technology
+It1-01
 02/02/2003
 0983145392
-KTLT 6
+KTLT 7
 AI 6
 DTTT 3
 
-Nguyen Van Duc
-20211234
+Le Hoang Long
+20213714
+The School of Information and Communication Technology
+IoT-02
+21/04/2003
+01283834612
+
+Mau Hoang Long
+20216969
+HUST
+IoT-03
+24/09/2003
+09864538342
 

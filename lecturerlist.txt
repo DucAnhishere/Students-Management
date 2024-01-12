@@ -1,11 +1,13 @@
 Ta Son Xuat
+0000
+School of Electrical and Electronic Engineering
 01/01/1980
 0000000000
-0000
 NLSCT
 
 Hoang Phuong Chi
 1111
+School of Electrical and Electronic Engineering
 01/02/1980
 1111111111
 NLSCT
@@ -13,12 +15,15 @@ TWP
 
 Hoang Quang Huy
 2222
+School of Electrical and Electronic Engineering
 01/03/1980
 0222222222
 KTLT
+DTTT
 
 Pham Nguyen Thanh Loan
 3333
+School of Electrical and Electronic Engineering
 01/04/1980
 0333333333
 DTTT
@@ -26,12 +31,16 @@ IC Tuong Tu
 
 Nguyen Duc Minh
 4444
+School of Electrical and Electronic Engineering
 01/05/1980
 0444444444
 VXL
+Nhap Mon DTVT
+Dien Tu So
 
 Vo Le Cuong
 5555
+School of Electrical and Electronic Engineering
 01/06/1980
 0555555555
 AI
